@@ -7,22 +7,80 @@ import { ReactComponent as CogIcon } from './icons/cog.svg';
 import { ReactComponent as ChevronIcon } from './icons/chevron.svg';
 import { ReactComponent as ArrowIcon } from './icons/arrow.svg';
 import { ReactComponent as BoltIcon } from './icons/bolt.svg';
+import axios from 'axios';
+import { useAPI } from 'react-api-hooks';
+import { Button } from '@material-ui/core';
+import HomeIcon from '@material-ui/icons/Home';
+
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+
+// import Carousel from '@brainhubeu/react-carousel';
+// import '@brainhubeu/react-carousel/lib/style.css';
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
 
 import React, { useState, useEffect, useRef } from 'react';
 import { CSSTransition } from 'react-transition-group';
 
-function App() {
-  return (
-    <Navbar>
-      <NavItem icon={<PlusIcon />} />
-      <NavItem icon={<BellIcon />} />
-      <NavItem icon={<MessengerIcon />} />
+const API_URL = 'http://jsonplaceholder.typicode.com';
+const API_corona = 'https://covid19.mathdro.id/api/countries/indonesia';
 
-      <NavItem icon={<CaretIcon />}>
-        <DropdownMenu></DropdownMenu>
-      </NavItem>
-    </Navbar>
+
+
+function App() {
+
+  return (
+    <React.Fragment>
+
+    <Router>
+      <Navbar>
+        <NavItemSimple><Link to="/">Home</Link></NavItemSimple> 
+        <NavItemSimple><Link to="/about">About</Link></NavItemSimple>
+        <NavItemSimple><Link to="/login">Login</Link></NavItemSimple>
+        <NavItem icon={<PlusIcon />} />
+        <NavItem icon={<BellIcon />} />
+        <NavItem icon={<MessengerIcon />} />
+        <NavItem icon={<CaretIcon />}>
+          <DropdownMenu></DropdownMenu>
+        </NavItem>
+      </Navbar>
+
+        {/* A <Switch> looks through its children <Route>s and
+            renders the first one that matches the current URL. */}
+        <Switch>
+          <Route path="/about">
+            <About />
+          </Route>
+          <Route path="/login">
+            <Login />
+          </Route>
+          <Route path="/">
+             <BannerItem></BannerItem>
+             <InfoCorona></InfoCorona>
+          </Route>
+        </Switch>
+    
+    </Router>
+    </React.Fragment>
   );
+}
+function Home() {
+  return <h2>Home</h2>;
+}
+
+function About() {
+  return <h2>About</h2>;
+}
+
+function Login() {
+  return <h2>Login</h2>;
 }
 
 function Navbar(props) {
@@ -33,16 +91,174 @@ function Navbar(props) {
   );
 }
 
+function Banner(props) {
+  return (
+    <div class={props.tag}>{props.children}</div>
+  );
+}
+
+function Info(props) {
+  const url = `${API_URL}/posts/`;
+  // const [result, setData] = useState({ posts: [] });
+  let ayam = 'ayam'
+  // axios.get(url).then(response => response.data)
+  //   .then((data) => {
+  //     setData('hello')
+  //     console.log(data)
+  //     //json = data
+  //   })
+
+
+  const axiosConfig = {
+    method: 'GET',
+    // data: { foo: 'bar' },
+    // params: { id: '14' }
+  };
+  const { response, error, isLoading } = useAPI(url, axiosConfig);
+
+  if (error) {
+    return <p>error</p>
+  }
+
+  if (isLoading) {
+    return <p>loading...</p>
+  }
+
+  return (
+    <div>
+      <ul>
+        {response.data.map(item => (
+          <li key={item.id}>
+            {item.title > 500 &&
+               <a syle="color:lightgreen;" href={item.id}>{item.title}</a>
+            }
+
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function InfoCorona(props) {
+  const url = `${API_corona}`;
+  const axiosConfig = {
+    method: 'GET',
+    // data: { foo: 'bar' },
+    // params: { id: '14' }
+  };
+  const { response, error, isLoading } = useAPI(url, axiosConfig);
+
+  if (error) {
+    return <p>error</p>
+  }
+
+  if (isLoading) {
+    return <p>loading...</p>
+  }
+
+  if (response) {
+    console.log(response.data);
+  }
+
+  const yesterdayConfirmed = 6759
+  
+
+  return (
+    <div class="flex-box">
+      <div>
+        <p>Terkonfirmasi</p>
+        <p>{response.data.confirmed.value}</p>
+
+        {response.data.confirmed.value > yesterdayConfirmed && <YesterdayItemIncrease value={response.data.confirmed.value - yesterdayConfirmed} /> }
+        {response.data.confirmed.value < yesterdayConfirmed && <YesterdayItemDecrease value={response.data.confirmed.value - yesterdayConfirmed} /> }
+
+       <Button variant="contained" color="primary">Hello World</Button>
+       </div>
+
+       <div>
+        <p>Sembuh</p>
+       <p>{response.data.recovered.value}</p>
+       <Button variant="contained" color="primary">Hello World</Button>
+       </div>
+
+       <div>
+        <p>Meninggal</p>
+       <p>{response.data.deaths.value}</p>
+       <Button variant="contained" color="primary">Hello World</Button>
+       </div>
+
+
+    </div>
+  );
+}
+
+function YesterdayItemIncrease(props){
+  return(
+    <p class="lightgreen">+{props.value} since yesterday</p>
+  )
+}
+
+function YesterdayItemDecrease(props){
+  return(
+    <p class="lightred">{props.value} since yesterday</p>
+  )
+}
+
+function BannerItem(props) {
+  var settings = {
+    dots: true,
+    arrows: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 3
+  };
+  return (
+    <div >
+
+      <Slider {...settings}>
+        <div>
+         <img src="https://pbs.twimg.com/media/EV3Y5JfUMAAXnDx?format=jpg&name=small"></img>
+        </div>
+        <div>
+        <img src="https://pbs.twimg.com/media/EV3Y5JfUMAAXnDx?format=jpg&name=small"></img>
+        </div>
+        <div>
+        <img src="https://pbs.twimg.com/media/EV3Y5JfUMAAXnDx?format=jpg&name=small"></img>
+        </div>
+        <div>
+        <img src="https://pbs.twimg.com/media/EV3Y5JfUMAAXnDx?format=jpg&name=small"></img>
+        </div>
+        <div>
+        <img src="https://pbs.twimg.com/media/EV3Y5JfUMAAXnDx?format=jpg&name=small"></img>
+        </div>
+        
+      </Slider>
+    </div>
+  );
+
+}
 function NavItem(props) {
   const [open, setOpen] = useState(false);
 
   return (
     <li className="nav-item">
-      <a href="#" className="icon-button" onClick={() => setOpen(!open)}>
+      <a href={props.href} className="icon-button" onClick={() => setOpen(!open)}>
         {props.icon}
       </a>
 
       {open && props.children}
+    </li>
+  );
+}
+
+function NavItemSimple(props) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <li className="nav-item">
+      {props.children}
     </li>
   );
 }
