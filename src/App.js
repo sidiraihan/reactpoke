@@ -25,6 +25,8 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+import { useForm } from 'react-hook-form'
+
 
 import React, { useState, useEffect, useRef } from 'react';
 import { CSSTransition } from 'react-transition-group';
@@ -80,7 +82,26 @@ function About() {
 }
 
 function Login() {
-  return <h2>Login</h2>;
+  const { register, handleSubmit, watch, errors } = useForm()
+  const onSubmit = data_login => { console.log(data_login) }
+
+  console.log(watch('email')) // watch input value by passing the name of it
+  console.log(watch('password'))
+  return (
+    <div>
+      <h2>login</h2>
+   <form onSubmit={handleSubmit(onSubmit)}>
+      <input name="email" placeholder="email"  ref={register({ required: true })} />
+      
+      <input type="password" name="password" placeholder="password" ref={register({ required: true })} />
+      {errors.email && <span> Email field is required</span>}
+      {errors.password && <span> Password field is required</span>}
+
+      <input type="submit" />
+    </form>
+    </div>
+
+  );
 }
 
 function Navbar(props) {
