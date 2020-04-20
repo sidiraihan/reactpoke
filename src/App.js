@@ -63,6 +63,9 @@ function App() {
           <Route path="/login">
             <Login />
           </Route>
+          <Route path="/register">
+            <Register />
+          </Route>
           <Route path="/">
              <BannerItem></BannerItem>
              <InfoCorona></InfoCorona>
@@ -85,20 +88,53 @@ function Login() {
   const { register, handleSubmit, watch, errors } = useForm()
   const onSubmit = data_login => { console.log(data_login) }
 
-  console.log(watch('email')) // watch input value by passing the name of it
-  console.log(watch('password'))
+  //console.log(watch('email')) // watch input value by passing the name of it
+  //console.log(watch('password'))
   return (
     <div>
       <h2>login</h2>
    <form onSubmit={handleSubmit(onSubmit)}>
-      <input name="email" placeholder="email"  ref={register({ required: true })} />
-      
-      <input type="password" name="password" placeholder="password" ref={register({ required: true })} />
+      <input name="email" placeholder="email"  ref={register({ required: true, pattern: /^\S+@\S+$/i })} />
+      <input type="password" name="password" placeholder="password" ref={register({ required: true, maxLength: 100 })} />
       {errors.email && <span> Email field is required</span>}
       {errors.password && <span> Password field is required</span>}
 
       <input type="submit" />
     </form>
+
+    <p>or <Link to="/register">Register</Link></p>
+    </div>
+
+  );
+}
+
+function Register(props) {
+  const { register, handleSubmit, watch, errors } = useForm()
+  const onSubmit = data_register => { console.log(data_register) }
+
+  //console.log(watch('email')) // watch input value by passing the name of it
+  //console.log(watch('password'))
+  return (
+    <div>
+      <h2>Register</h2>
+   <form onSubmit={handleSubmit(onSubmit)}>
+      <input name="email" placeholder="email"  ref={register({ required: true })} />
+      <input type="password" name="password" placeholder="password" ref={register({ required: true })} />
+      
+      <select name="gender" ref={register({ required: true })}>
+        <option value="male">male</option>
+        <option value="female">female</option>
+      </select>
+      
+      {errors.email && <span> {errors}></span>}
+      {errors.password && <span> Password field is required</span>}
+      {errors.gender && <span> Gender field is required</span>}
+
+      <input type="submit" />
+    </form>
+
+    <p>or <Link to="/login">Login</Link></p>
+
     </div>
 
   );
