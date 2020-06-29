@@ -118,17 +118,18 @@ function Register(props) {
     <div>
       <h2>Register</h2>
    <form onSubmit={handleSubmit(onSubmit)}>
-      <input name="email" placeholder="email"  ref={register({ required: true })} />
-      <input type="password" name="password" placeholder="password" ref={register({ required: true })} />
+      <input name="email_register" placeholder="email"  ref={register({ required: true,pattern: /^\S+@\S+$/i  })} />
+      <input type="password" name="password_register" placeholder="password" ref={register({ required: true, maxLength: 100})} />
       
-      <select name="gender" ref={register({ required: true })}>
+      <select name="gender_register" ref={register({ required: true })}>
+        <option value=""></option>
         <option value="male">male</option>
         <option value="female">female</option>
       </select>
       
-      {errors.email && <span> {errors}></span>}
-      {errors.password && <span> Password field is required</span>}
-      {errors.gender && <span> Gender field is required</span>}
+      {errors.email_register && <span> Email is required</span>}
+      {errors.password_register && <span> Password field is required</span>}
+      {errors.gender_register && <span> Gender field is required</span>}
 
       <input type="submit" />
     </form>
@@ -252,13 +253,13 @@ function InfoCorona(props) {
 
 function YesterdayItemIncrease(props){
   return(
-    <p class="lightgreen">+{props.value} since yesterday</p>
+    <p className="lightgreen">+{props.value} since yesterday</p>
   )
 }
 
 function YesterdayItemDecrease(props){
   return(
-    <p class="lightred">{props.value} since yesterday</p>
+    <p className="lightred">{props.value} since yesterday</p>
   )
 }
 
