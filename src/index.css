@@ -21,6 +21,15 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: var(--text-color);
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  scrollbar-color: transparent transparent; /*just hides the scrollbar for firefox */
+
+  
+}
+
+body::-webkit-scrollbar {
+  display: none;
 }
 
 code {
