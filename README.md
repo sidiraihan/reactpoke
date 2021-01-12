@@ -12,3 +12,6 @@ or build
 npm run build
 serve -s build
 ```
+
+![lighthouse](lighthouse.png)
+
