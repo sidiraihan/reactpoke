@@ -110,8 +110,6 @@ function App() {
   return (
     <React.Fragment>
     <Router>
-
-
         <Switch>
           <Route path="/pokemon/:slug">
             <TopBackBtn leftIcon={<ArrowIcon />}/>
