@@ -21,7 +21,7 @@ import {
 import Modal from 'react-modal';
 import BounceLoader from "react-spinners/BounceLoader";
 import { useForm } from 'react-hook-form'
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
 
 const API_pokemon = new ApolloClient({
@@ -46,7 +46,7 @@ const customStyles = {
     right: 0,
     bottom: 0,
     backgroundColor: 'rgb(6 6 6 / 75%)',
-    backdropFilter: 'blur(10px)'
+    backdropFilter: 'blur(12px)'
   },
   content: {
     position: 'absolute',
@@ -75,7 +75,7 @@ function App() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [catching, setCatching] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const pokemon = useRef(false);
+  const [pokemon, setPokemon] = useState(false);
 
   const [currentStorage, SyncWithLocalStorage] = useState(localStorage || {});
   const eventListenerFun = e => {
@@ -293,7 +293,7 @@ function App() {
   }
   
   function PokedetailHtml(props) {
-    const { colors } = useImageColor(props.value.pokemon.sprites.front_default, { cors: true, color: 5, windowSize: 25 })
+    const { colors } = useImageColor(props.value.pokemon.sprites.front_default, { cors: true, color: 7, windowSize: 10 })
     useEffect(() => {
       setLoading(false)
     });
@@ -405,7 +405,7 @@ function App() {
         var dice = Math.random() > 0.5 ? 1 : 2  
         console.log(dice)
         if(dice === 1) {
-          pokemon.current = props
+          setPokemon(props)
           console.log("catch success")
           setModalIsOpenToTrue()
           setCatching(false)
@@ -458,6 +458,7 @@ function App() {
       align-items: center;
       background: transparent;
       width: 100%;
+      cursor: pointer;
     `}>
     <p css={css`
       background-color: ${props.bg};
