@@ -21,7 +21,7 @@ import {
 import Modal from 'react-modal';
 import BounceLoader from "react-spinners/BounceLoader";
 import { useForm } from 'react-hook-form'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 
 
 const API_pokemon = new ApolloClient({
@@ -45,7 +45,8 @@ const customStyles = {
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgb(6 6 6 / 75%)'
+    backgroundColor: 'rgb(6 6 6 / 75%)',
+    backdropFilter: 'blur(10px)'
   },
   content: {
     position: 'absolute',
@@ -74,7 +75,7 @@ function App() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [catching, setCatching] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [pokemon, setPokemon] = useState(false);
+  const pokemon = useRef(false);
 
   const [currentStorage, SyncWithLocalStorage] = useState(localStorage || {});
   const eventListenerFun = e => {
@@ -247,7 +248,6 @@ function App() {
   
   function Pokedetail() {
     let { slug } = useParams();
-    setLoading(true)
 
     const GET_DETAIL_POKEMON = gql`
     query pokemon($name: String!) {
@@ -332,7 +332,7 @@ function App() {
             padding: 0;
             font-size: 12px;
             width: 100%;
-            justify-content: space-around;
+            justify-content: center;
             align-items: center;
             color: white;
             border-bottom-left-radius: 0.5em;
@@ -366,7 +366,7 @@ function App() {
                 <h2>Types</h2>
                 <div css={css` display:flex; flex-wrap:wrap; justify-content: space-between; column-gap:12px; max-width: 360px;`}>
                 {props.value.pokemon.types.map((pokemon, key) => (
-                  <p css={css` border-radius: 16px; border: 1px solid ${colors}; color: ${colors}; padding: 8px;`} key={key}>{pokemon.type.name}</p>
+                  <p css={css` border-radius: 16px; border: 1px solid ${colors}; color: #fafafa; padding: 8px;`} key={key}>{pokemon.type.name}</p>
                 ))}
                 </div>
               </div>
@@ -375,7 +375,7 @@ function App() {
                 <h2>Moves</h2>
                   <div css={css` display:flex; flex-wrap:wrap; justify-content: space-between; column-gap:12px; max-width:360px;`}>
                   {props.value.pokemon.moves.map((pokemon, key) => (
-                    <p css={css` border-radius: 16px; border: 1px solid ${colors}; color: ${colors}; padding: 8px;`} key={key}>{pokemon.move.name}</p>
+                    <p css={css` border-radius: 16px; border: 1px solid ${colors}; color: #fafafa; padding: 8px;`} key={key}>{pokemon.move.name}</p>
                   ))}   
                   </div>         
                 </div>
@@ -391,6 +391,37 @@ function App() {
   }
   
   function CatchPokemon(props) {
+
+    const CatchController = useCallback((props) => {
+  
+      console.log("trying to catch" +props.name)
+  
+        setSubmitted(false)
+        setCatching(true)
+        setLoading(true)
+  
+      setTimeout(() => {  
+        
+        var dice = Math.random() > 0.5 ? 1 : 2  
+        console.log(dice)
+        if(dice === 1) {
+          pokemon.current = props
+          console.log("catch success")
+          setModalIsOpenToTrue()
+          setCatching(false)
+          setLoading(false)
+        }else{
+          //alert("not lucky enough try again and see")
+          console.log("catch failed")
+          setModalIsOpenToTrue()
+          setCatching(true)
+          setLoading(false)
+        }
+    
+      }, 1000);
+  
+     
+    }, []);
 
     if(catching) {
       return <div css={css`
@@ -441,42 +472,6 @@ function App() {
     </div>
     }
 
-  }
-  
-  function CatchController(props) {
-    
-    console.log("trying to catch" +props.name)
-
-      setSubmitted(false)
-      setCatching(true)
-      setLoading(true)
-
-    setTimeout(() => {  
-      
-      var dice = Math.random() > 0.5 ? 1 : 2  
-      console.log(dice)
-      if(dice === 1) {
-        setPokemon(props)
-        console.log("catch success")
-        setModalIsOpenToTrue()
-        setCatching(false)
-        setLoading(false)
-      }else{
-        //alert("not lucky enough try again and see")
-        console.log("catch failed")
-        setModalIsOpenToTrue()
-        setCatching(true)
-        setLoading(false)
-      }
-  
-    }, 1000);
-
-   
-     
-    
-
-
-  
   }
   
 
