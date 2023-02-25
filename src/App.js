@@ -301,6 +301,8 @@ function App() {
     return(
       <div>
           <div css={css`
+          position: sticky;
+          top: 0;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -317,8 +319,11 @@ function App() {
           }`} 
             key={props.value.pokemon.id}>
             <img css={css`
-            flex: 1;
-            width: 100%;
+            height: 100px;
+            width: 100px;
+            margin-top: 1vh;
+            background-color: white;
+            border-radius: 100%;
             `} src={props.value.pokemon.sprites.front_default} />
             <div css={css`
             display: flex;
@@ -336,6 +341,7 @@ function App() {
               <h2 css={css`
               font-size: 28px;
               font-weight: bold;
+              margin: 1vh;
             `}>{props.value.pokemon.name}</h2>
               <OwnedHtml value={props.value.pokemon.id} />
             </div>
@@ -343,7 +349,7 @@ function App() {
   
           <div css={css`
             display: flex;
-            flex-direction: row-reverse;
+            flex-direction: column;
             flex: 1;
             padding: 0;
             font-size: 12px;
@@ -356,18 +362,22 @@ function App() {
             border-bottom-right-radius: 0.5em;
             margin-bottom: 15vh;
             `}>
-              <div css={css` flex:1; align-items: center; display: flex; flex-direction: column; `}> 
+              <div css={css` flex:1; align-items: center; display: flex; flex-direction: column; width:100%;`}> 
                 <h2>Types</h2>
+                <div css={css` display:flex; flex-wrap:wrap; justify-content: space-between; column-gap:12px; max-width: 360px;`}>
                 {props.value.pokemon.types.map((pokemon, key) => (
-                  <p key={key}>{pokemon.type.name}</p>
+                  <p css={css` border-radius: 16px; border: 1px solid ${colors}; color: ${colors}; padding: 8px;`} key={key}>{pokemon.type.name}</p>
                 ))}
+                </div>
               </div>
   
-              <div css={css` flex:1; align-items: center; display: flex; flex-direction: column; `}> 
+              <div css={css` flex:1; align-items: center; display: flex; flex-direction: column; width:100%; `}> 
                 <h2>Moves</h2>
-                {props.value.pokemon.moves.map((pokemon, key) => (
-                  <p key={key}>{pokemon.move.name}</p>
-                ))}            
+                  <div css={css` display:flex; flex-wrap:wrap; justify-content: space-between; column-gap:12px; max-width:360px;`}>
+                  {props.value.pokemon.moves.map((pokemon, key) => (
+                    <p css={css` border-radius: 16px; border: 1px solid ${colors}; color: ${colors}; padding: 8px;`} key={key}>{pokemon.move.name}</p>
+                  ))}   
+                  </div>         
                 </div>
           </div>
                   
@@ -730,6 +740,7 @@ function App() {
       background-color: transparent;
       position: fixed;
       padding: 1em;
+      z-index: 999;
     `}><span className="icon-button">{props.leftIcon}</span></div>
   );
   }
